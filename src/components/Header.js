@@ -5,6 +5,7 @@ import db from '../db';
 import Button from '@material-ui/core/Button';
 import { withStyles } from '@material-ui/core/styles';
 import { Icon, Avatar } from '@material-ui/core';
+import NewTask from './NewTask';
 
 const styles = () => ({
     root: {
@@ -21,6 +22,9 @@ const styles = () => ({
         display: 'flex',
         alignItems: 'center'
     },
+    usernameContainer:{
+        paddingBottom: 6  
+    },
     button: {
         color: '#FFF !important',
     }
@@ -29,6 +33,12 @@ const styles = () => ({
 
 const Header = ({ classes }) => {
     const [userData, setUserData] = useState({})
+    const [open, setOpen] = React.useState(false);
+
+    const handleOpen = () => {
+        setOpen(true);
+    };
+
     // Returns the signed-in user's profile Pic URL.
     const getProfilePicUrl = () => {
         return firebase.auth().currentUser.photoURL || '/images/profile_placeholder.png';
@@ -92,8 +102,9 @@ const Header = ({ classes }) => {
     }, [])
 
     return (
+        <>
+        <NewTask open={open} setOpen={setOpen}/>
         <header className={classes.root}>
-
             <div className={classes.container}>
                 <Icon >style</Icon>
                 <h3>&nbsp; My to-do's</h3>
@@ -102,9 +113,13 @@ const Header = ({ classes }) => {
             <div id="user-container" className={classes.container}>
                 {!!userData.userName ? 
                 <> 
-                    <Button className={classes.container}>
-                        <Avatar alt={userData.userName} src={userData.profilePicUrl}>&nbsp;</Avatar>
+                    <div  className={`${classes.container} ${classes.usernameContainer}`} >
+                        <Avatar alt={userData.userName} src={userData.profilePicUrl}/>&nbsp;
                         <span id="user-name" style={{fontWeight:500}}>{userData.userName}&nbsp;</span>
+                    </div>
+
+                    <Button onClick={handleOpen} className={classes.button}>
+                        <Icon >addbox</Icon> &nbsp; Add new
                     </Button>
                     <Button onClick={signOut} className={classes.button}>
                         Sign-out
@@ -115,6 +130,7 @@ const Header = ({ classes }) => {
                 </Button>}
             </div>
         </header>
+        </>
     )
 }
 
