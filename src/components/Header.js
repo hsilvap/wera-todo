@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect,useContext } from 'react';
 import firebase from 'firebase'
 
 import db from '../db';
@@ -6,6 +6,8 @@ import Button from '@material-ui/core/Button';
 import { withStyles } from '@material-ui/core/styles';
 import { Icon, Avatar } from '@material-ui/core';
 import NewTask from './NewTask';
+import { StoreContext } from '../context/store';
+import { StoreActions } from '../context/reducer';
 
 const styles = () => ({
     root: {
@@ -32,22 +34,10 @@ const styles = () => ({
 
 
 const Header = ({ classes }) => {
-    const [userData, setUserData] = useState({})
-    const [open, setOpen] = React.useState(false);
-
+    const {state, dispatch} = useContext(StoreContext);
     const handleOpen = () => {
-        setOpen(true);
+        dispatch({type: StoreActions.CREATE_NEW})
     };
-
-    // Returns the signed-in user's profile Pic URL.
-    const getProfilePicUrl = () => {
-        return firebase.auth().currentUser.photoURL || '/images/profile_placeholder.png';
-    }
-
-    // Returns the signed-in user's display name.
-    const getUserName = () => {
-        return firebase.auth().currentUser.displayName;
-    }
 
     const saveMessagingDeviceToken = () => {
         firebase.messaging().getToken().then(function (currentToken) {
@@ -69,8 +59,6 @@ const Header = ({ classes }) => {
         console.log('Requesting notifications permission...');
         firebase.messaging().requestPermission().then(function () {
             // Notification permission granted.
-
-            
             saveMessagingDeviceToken();
         }).catch(function (error) {
             console.error('Unable to get permission to notify.', error);
@@ -88,22 +76,18 @@ const Header = ({ classes }) => {
     useEffect(() => {
         db.auth().onAuthStateChanged((user) => {
             if (user) {
-                var profilePicUrl = getProfilePicUrl();
-                var userName = getUserName();
-                setUserData({
-                    profilePicUrl,
-                    userName
-                })
+                var profilePicUrl = firebase.auth().currentUser.photoURL || '/images/profile_placeholder.png';
+                var userName = firebase.auth().currentUser.displayName;
+                dispatch({type: StoreActions.LOGIN, data: {loggedIn: true, user: { profilePicUrl,userName } } })
             } else {
-                setUserData({})
+                dispatch({type: StoreActions.LOGOUT})
             }
         })
-
     }, [])
 
     return (
         <>
-        <NewTask open={open} setOpen={setOpen}/>
+        <NewTask/>
         <header className={classes.root}>
             <div className={classes.container}>
                 <Icon >style</Icon>
@@ -111,11 +95,11 @@ const Header = ({ classes }) => {
             </div>
 
             <div id="user-container" className={classes.container}>
-                {!!userData.userName ? 
+                {!!state.loggedIn ? 
                 <> 
                     <div  className={`${classes.container} ${classes.usernameContainer}`} >
-                        <Avatar alt={userData.userName} src={userData.profilePicUrl}/>&nbsp;
-                        <span id="user-name" style={{fontWeight:500}}>{userData.userName}&nbsp;</span>
+                        <Avatar alt={state.user.userName} src={state.user.profilePicUrl}/>&nbsp;
+                        <span id="user-name" style={{fontWeight:500}}>{state.user.userName}&nbsp;</span>
                     </div>
 
                     <Button onClick={handleOpen} className={classes.button}>

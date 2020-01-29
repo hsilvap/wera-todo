@@ -1,4 +1,6 @@
-import React from 'react';
+import React, {useContext} from 'react';
+import { StoreContext } from '../context/store';
+import { StoreActions } from '../context/reducer';
 import { makeStyles } from '@material-ui/core/styles';
 import Modal from '@material-ui/core/Modal';
 import Backdrop from '@material-ui/core/Backdrop';
@@ -29,17 +31,18 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
-export default function NewTask({ open, setOpen }) {
+export default function NewTask() {
     const classes = useStyles();
+    const {state, dispatch} = useContext(StoreContext);
 
     const handleClose = () => {
-        setOpen(false);
+        dispatch({type: StoreActions.CANCEL_CREATE_NEW})
     };
 
     return (
         <Modal
             className={classes.modal}
-            open={open}
+            open={state.createNew}
             onClose={handleClose}
             closeAfterTransition
             BackdropComponent={Backdrop}
@@ -47,7 +50,7 @@ export default function NewTask({ open, setOpen }) {
                 timeout: 500,
             }}
         >
-            <Fade in={open}>
+            <Fade in={state.createNew}>
                 <div className={classes.paper}>
                     <h2 id="transition-modal-title">New Task</h2>
 
