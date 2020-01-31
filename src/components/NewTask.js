@@ -1,4 +1,4 @@
-import React, {useContext} from 'react';
+import React, { useContext, useState } from 'react';
 import { StoreContext } from '../context/store';
 import { StoreActions } from '../context/reducer';
 import { makeStyles } from '@material-ui/core/styles';
@@ -8,6 +8,11 @@ import Button from '@material-ui/core/Button';
 import Fade from '@material-ui/core/Fade';
 import TextField from '@material-ui/core/TextField';
 import { DropzoneArea } from 'material-ui-dropzone'
+import { Slider, Typography } from '@material-ui/core';
+import TagsInput from 'react-tagsinput'
+import DateTimePicker from 'react-datetime-picker';
+
+import 'react-tagsinput/react-tagsinput.css'
 
 const useStyles = makeStyles(theme => ({
     modal: {
@@ -20,25 +25,70 @@ const useStyles = makeStyles(theme => ({
         border: '2px solid #000',
         boxShadow: theme.shadows[5],
         padding: theme.spacing(2, 4, 3),
+        maxWidth:'430px'
     },
     form: {
         display: 'grid',
         gridGap: '10px'
     },
-    footer:{
+    footer: {
         display: 'flex',
         justifyContent: 'flex-end'
+    },
+    primaryColor:{
+        borderColor: '#3f51b5'
+    },
+    dropZoneArea:{
+        maxHeight: 200,
+        minHeight: 100,
+    },
+    dropZoneAreaText:{
+        fontSize: 18
     }
 }));
 
+export const priorities = [
+    {
+        value: 0,
+        label: 'Low',
+      },
+      {
+        value: 1,
+        label: 'Medium',
+      },
+      {
+        value: 2,
+        label: 'High',
+      },
+      {
+        value: 3,
+        label: 'Urgent',
+      },
+      {
+        value: 4,
+        label: 'Critical',
+      },
+];
+
+const valuetext = ( value ) =>{
+    return priorities[value].label;
+}
+
 export default function NewTask() {
     const classes = useStyles();
-    const {state, dispatch} = useContext(StoreContext);
-
+    const { state, dispatch } = useContext(StoreContext);
+    const [task, setTask] = useState({
+        title:"",
+        description:"",
+        dueDate:"",
+        priority:1,
+        links:[],
+        files:[],
+    })
     const handleClose = () => {
-        dispatch({type: StoreActions.CANCEL_CREATE_NEW})
+        dispatch({ type: StoreActions.CANCEL_CREATE_NEW })
     };
-
+    console.log(task)
     return (
         <Modal
             className={classes.modal}
@@ -56,24 +106,67 @@ export default function NewTask() {
 
                     <form className={classes.form}>
                         <TextField
-                            label="Title" />
+                            required
+                            label="Title"
+                            value={task.title}
+                            onChange={(e)=>setTask({...task, title:e.target.value})}
+                            />
                         <TextField
                             label="Description"
                             multiline
-                            rows="4"
-                            rowsMax="8"
+                            rows="2"
+                            rowsMax="4"
+                            value={task.description}
+                            onChange={(e)=>setTask({...task, description:e.target.value})}
+
                         />
-                        <TextField
-                            id="datetime-local"
-                            label="Due date"
-                            type="datetime-local"
-                            InputLabelProps={{
-                                shrink: true,
-                            }}
+
+                        <>
+                        <Typography   gutterBottom>
+                            Due date
+                        </Typography>
+                        <DateTimePicker
+                            value={task.dueDate}
+                            onChange={(date)=>{ setTask({...task, dueDate:date})}}
                         />
+                        </>
+
+                        <>
+                        <Typography  gutterBottom>
+                            Priority
+                        </Typography>
+                        <Slider
+                         defaultValue={1}
+                         aria-labelledby="discrete-slider"
+                         valueLabelDisplay="auto"
+                         valueLabelFormat={valuetext}
+                         step={1}
+                         marks={priorities}
+                         min={0}
+                         max={4}
+                         value={task.priority}
+                         onChange={(e,newVal) => setTask({...task, priority: newVal})}
+                        />
+                        </>
+                        <>
+                        <Typography  gutterBottom>
+                            Links
+                        </Typography>
+                        <TagsInput 
+                        focusedClassName={classes.primaryColor}
+                        inputProps={{placeholder: 'Add'}}
+                        value={task.links}
+                        onlyUnique
+                        onChange={(link)=> setTask({...task, links: [...link]})} 
+                        />
+                        </>
+
                         <DropzoneArea
                             useChipsForPreview={true}
                             onChange={() => console.log('kek')}
+                            dropzoneClass={classes.dropZoneArea}
+                            dropzoneParagraphClass={classes.dropZoneAreaText}
+                            dropzoneText={"Drag and drop a file here or click"}
                         />
 
                         <div className={classes.footer}>

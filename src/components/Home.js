@@ -5,22 +5,20 @@ import Header from './Header';
 import { StoreContext } from '../context/store';
 import { StoreActions } from '../context/reducer';
 
-
-
 function Home() {
-    const {dispatch } = useContext(StoreContext)
-
+    const {state, dispatch } = useContext(StoreContext)
     const handleOpen = () =>{
         dispatch({type: StoreActions.CREATE_NEW})
     }
+
     return (
         <div className="App">
             <Header />
-            <Fab onClick={handleOpen} style={{ backgroundColor: '#1976d2', position: 'absolute', right: '30px', bottom: '15px' }} color='primary' aria-label='add'>
+            {state.loggedIn && <Fab onClick={handleOpen} style={{ backgroundColor: '#1976d2', position: 'absolute', right: '30px', bottom: '15px' }} color='primary' aria-label='add'>
                 <Icon>
                 addicon
                 </Icon>
-            </Fab>
+            </Fab>}
         </div>
     );
 }
