@@ -84,11 +84,15 @@ export default function NewTask() {
         priority:1,
         links:[],
         files:[],
+        complete: false,
     })
     const handleClose = () => {
         dispatch({ type: StoreActions.CANCEL_CREATE_NEW })
     };
-    console.log(task)
+
+    const handleSave = () =>{
+        dispatch({ type: StoreActions.SAVE, data: task })
+    }
     return (
         <Modal
             className={classes.modal}
@@ -170,7 +174,7 @@ export default function NewTask() {
                         />
 
                         <div className={classes.footer}>
-                            <Button variant="contained" color="primary">
+                            <Button variant="contained" color="primary" onClick={handleSave}>
                                 Save
                             </Button>
                         </div>
