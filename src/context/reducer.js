@@ -8,6 +8,7 @@ export const StoreActions = {
     CREATE_NEW: 'CREATE_NEW',
     SAVE: 'SAVE',
     CANCEL_CREATE_NEW: 'CANCEL_CREATE_NEW',
+    RECIEVE_TASKS: 'RECIEVE_TASKS',
 }
 
 
@@ -23,16 +24,21 @@ export function StoreReducer(state, action) {
         case StoreActions.CREATE_NEW: {
             return {...state, createNew :true};
         }
+       
+        case StoreActions.RECIEVE_TASKS: {
+            const { data } = action;
+            const prev = {...state}
+            return {...state, toDos:[...prev.toDos, ...data] };
+        }
         case StoreActions.SAVE: {
             const { data } = action;
             const uid = db.auth().currentUser.uid;
             //console.log(db.auth())
-            var ola = db.firestore().collection('tasks').doc(uid).collection('todo').add(data);
+            const save = db.firestore().collection('tasks').doc(uid).collection('todo').add(data);
             //var ola = db.firestore().collection('tasks').add({test: 'abc'});
-            ola.then(function(){
-                console.log('kek')
+            save.then(function(){
+                return {...state}
             })
-        
         
         }
         case StoreActions.CANCEL_CREATE_NEW: {

@@ -1,4 +1,4 @@
-import React, { useEffect,useContext } from 'react';
+import React, { useContext } from 'react';
 import firebase from 'firebase'
 
 import db from '../db';
@@ -73,17 +73,6 @@ const Header = ({ classes }) => {
         db.auth().signOut();
     }
 
-    useEffect(() => {
-        db.auth().onAuthStateChanged((user) => {
-            if (user) {
-                var profilePicUrl = firebase.auth().currentUser.photoURL || '/images/profile_placeholder.png';
-                var userName = firebase.auth().currentUser.displayName;
-                dispatch({type: StoreActions.LOGIN, data: {loggedIn: true, user: { profilePicUrl,userName } } })
-            } else {
-                dispatch({type: StoreActions.LOGOUT})
-            }
-        })
-    }, [])
 
     return (
         <>

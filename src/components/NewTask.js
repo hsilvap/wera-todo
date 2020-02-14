@@ -75,9 +75,7 @@ const valuetext = ( value ) =>{
 }
 
 export default function NewTask() {
-    const classes = useStyles();
-    const { state, dispatch } = useContext(StoreContext);
-    const [task, setTask] = useState({
+    const baseTask  = {
         title:"",
         description:"",
         dueDate:"",
@@ -85,8 +83,12 @@ export default function NewTask() {
         links:[],
         files:[],
         complete: false,
-    })
+    }
+    const classes = useStyles();
+    const { state, dispatch } = useContext(StoreContext);
+    const [task, setTask] = useState(baseTask)
     const handleClose = () => {
+        setTask(baseTask)
         dispatch({ type: StoreActions.CANCEL_CREATE_NEW })
     };
 

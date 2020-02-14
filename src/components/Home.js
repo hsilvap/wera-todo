@@ -1,27 +1,79 @@
-import React, {useContext} from 'react';
-import './../App.css';
-import { Fab, Icon } from '@material-ui/core';
+import React, { useContext, useEffect } from 'react';
+import firebase from 'firebase'
+import { withStyles } from '@material-ui/core/styles';
+import Task from './Task';
 import Header from './Header';
+import NewTaskFab from './NewTaskFab';
 import { StoreContext } from '../context/store';
 import { StoreActions } from '../context/reducer';
+import db from '../db';
+import './../App.css';
 
-function Home() {
-    const {state, dispatch } = useContext(StoreContext)
-    const handleOpen = () =>{
-        dispatch({type: StoreActions.CREATE_NEW})
+
+
+const styles = () => ({
+    root: {
+       display: 'flex',
+       flex: 1,
+    },
+    wrapper: {
+        /* layout */
+        width: '100%',
+        height: 'calc(100vh - 62.44px)',
+        position: 'fixed',
+        backgroundImage: 'url(' + 'https://media3.giphy.com/media/1AgjJa5aX1vmIvx8Zr/giphy.gif' +')',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+    },
+    cardContainer:{
+        flex: 1,
+        display: 'flex',
+        paddingTop: '5rem'
     }
+})
+
+
+const Home =({ classes })=> {
+    const { state, dispatch } = useContext(StoreContext)
+    
+    useEffect(() => {
+        var query;
+        db.auth().onAuthStateChanged((user) => {
+            if (user) {
+                const profilePicUrl = firebase.auth().currentUser.photoURL || '/images/profile_placeholder.png';
+                const userName = firebase.auth().currentUser.displayName;
+                const uid = firebase.auth().currentUser.uid;
+                query = db.firestore().collection('tasks').doc(uid).collection('todo').orderBy("dueDate", "asc").where("complete", "==", false);
+                query.onSnapshot(function (querySnapshot) {
+                    const tasks = [];
+                    querySnapshot.forEach(function (doc) {
+                        tasks.push({...doc.data(), uid : doc.id});
+                    });
+                    dispatch({ type: StoreActions.LOGIN, data: { loggedIn: true, user: { profilePicUrl, userName, uid }, toDos: tasks } })
+                })
+
+            } else {
+                dispatch({ type: StoreActions.LOGOUT })
+            }
+        })
+        return () => query
+    }, [])
 
     return (
         <div className="App">
             <Header />
-            {state.loggedIn && <Fab onClick={handleOpen} style={{ backgroundColor: '#1976d2', position: 'absolute', right: '30px', bottom: '15px' }} color='primary' aria-label='add'>
-                <Icon>
-                addicon
-                </Icon>
-            </Fab>}
+
+            <div className={classes.wrapper}> 
+                <div className={classes.cardContainer}>
+                { state.toDos.map(todo=> <Task todo={todo} key={todo.uid} />)}
+                </div>
+            </div>
+
+            <NewTaskFab/>
         </div>
     );
 }
 
 
-export default Home;
+export default withStyles(styles)(Home);

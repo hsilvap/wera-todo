@@ -6,7 +6,8 @@ export const initialState = {
     createNew: false,
     user: {},
     toDos: [],
-    completedToDos: []
+    completedToDos: [],
+    task: {},
 }
 
 export const StoreContext = React.createContext();
