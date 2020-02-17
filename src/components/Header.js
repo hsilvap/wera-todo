@@ -12,6 +12,7 @@ import { StoreActions } from '../context/reducer';
 const styles = () => ({
     root: {
         display: 'flex',
+        height: 62,
         flexDirection: 'row',
         justifyContent: 'space-around',
         flexShrink: '0',
@@ -25,7 +26,7 @@ const styles = () => ({
         alignItems: 'center'
     },
     usernameContainer:{
-        paddingBottom: 6  
+        paddingBottom: 6
     },
     button: {
         color: '#FFF !important',
@@ -84,8 +85,8 @@ const Header = ({ classes }) => {
             </div>
 
             <div id="user-container" className={classes.container}>
-                {!!state.loggedIn ? 
-                <> 
+                {!!state.loggedIn ?
+                <>
                     <div  className={`${classes.container} ${classes.usernameContainer}`} >
                         <Avatar alt={state.user.userName} src={state.user.profilePicUrl}/>&nbsp;
                         <span id="user-name" style={{fontWeight:500}}>{state.user.userName}&nbsp;</span>
@@ -96,7 +97,7 @@ const Header = ({ classes }) => {
                     </Button>
                     <Button onClick={signOut} className={classes.button}>
                         Sign-out
-                    </Button> 
+                    </Button>
                 </> :
                 <Button onClick={() => signIn()} className={classes.button}>
                     <Icon >fingerprint</Icon> &nbsp; Sign-in with Google

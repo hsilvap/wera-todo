@@ -1,6 +1,9 @@
 import React, { useContext, useEffect } from 'react';
 import firebase from 'firebase'
 import { withStyles } from '@material-ui/core/styles';
+import Typography from '@material-ui/core/Typography';
+import Unsplash , {toJson} from 'unsplash-js';
+
 import Task from './Task';
 import Header from './Header';
 import NewTaskFab from './NewTaskFab';
@@ -19,24 +22,45 @@ const styles = () => ({
     wrapper: {
         /* layout */
         width: '100%',
-        height: 'calc(100vh - 62.44px)',
+        height: 'calc(100vh - 62px)',
         position: 'fixed',
         backgroundImage: 'url(' + 'https://media3.giphy.com/media/1AgjJa5aX1vmIvx8Zr/giphy.gif' +')',
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat',
+        overflowY: 'auto',
     },
     cardContainer:{
         flex: 1,
         display: 'flex',
-        paddingTop: '5rem'
+        flexWrap: 'wrap',
+        justifyContent: 'center',
+        paddingTop: '5rem',
+        height: '100%'
     }
 })
 
 
 const Home =({ classes })=> {
     const { state, dispatch } = useContext(StoreContext)
-    
+    const unsplash = new Unsplash({ accessKey: `${process.env.UNSPLASH_ACCESS}`,  secret: `${process.env.UNSPLASH_SECRET}`});
+
+    useEffect(() => {
+        unsplash.photos.getRandomPhoto()
+        .then(toJson)
+        .then(json => {
+            console.log(json)
+            // Your code
+        });
+        /*
+        fetch('https://api.unsplash.com/photos/random', { headers: {
+            'Authorization': `${process.env.UNSPLASH_ACCESS}`
+          }
+        }).then(data => data.json()).then(response=> console.log(response))
+        */
+
+    }, [])
+
     useEffect(() => {
         var query;
         db.auth().onAuthStateChanged((user) => {
@@ -58,13 +82,12 @@ const Home =({ classes })=> {
             }
         })
         return () => query
-    }, [])
+    }, [dispatch])
 
     return (
         <div className="App">
             <Header />
-
-            <div className={classes.wrapper}> 
+            <div className={classes.wrapper}>
                 <div className={classes.cardContainer}>
                 { state.toDos.map(todo=> <Task todo={todo} key={todo.uid} />)}
                 </div>
