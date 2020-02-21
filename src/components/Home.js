@@ -2,7 +2,7 @@ import React, { useContext, useEffect } from 'react';
 import firebase from 'firebase'
 import { withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
-import Unsplash , {toJson} from 'unsplash-js';
+//import Unsplash , {toJson} from 'unsplash-js';
 
 import Task from './Task';
 import Header from './Header';
@@ -24,7 +24,7 @@ const styles = () => ({
         width: '100%',
         height: 'calc(100vh - 62px)',
         position: 'fixed',
-        backgroundImage: 'url(' + 'https://media3.giphy.com/media/1AgjJa5aX1vmIvx8Zr/giphy.gif' +')',
+        //backgroundImage: 'url(' + 'https://media3.giphy.com/media/1AgjJa5aX1vmIvx8Zr/giphy.gif' +')',
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat',
@@ -43,16 +43,17 @@ const styles = () => ({
 
 const Home =({ classes })=> {
     const { state, dispatch } = useContext(StoreContext)
-    const unsplash = new Unsplash({ accessKey: `${process.env.UNSPLASH_ACCESS}`,  secret: `${process.env.UNSPLASH_SECRET}`});
+    //const unsplash = new Unsplash({ accessKey: `${process.env.UNSPLASH_ACCESS}`,  secret: `${process.env.UNSPLASH_SECRET}`});
 
     useEffect(() => {
+        /*
+
         unsplash.photos.getRandomPhoto()
         .then(toJson)
         .then(json => {
             console.log(json)
             // Your code
         });
-        /*
         fetch('https://api.unsplash.com/photos/random', { headers: {
             'Authorization': `${process.env.UNSPLASH_ACCESS}`
           }

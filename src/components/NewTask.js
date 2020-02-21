@@ -12,7 +12,9 @@ import { Slider, Typography } from '@material-ui/core';
 import TagsInput from 'react-tagsinput'
 import DateTimePicker from 'react-datetime-picker';
 
+
 import 'react-tagsinput/react-tagsinput.css'
+import db from '../db';
 
 const useStyles = makeStyles(theme => ({
     modal: {
@@ -39,8 +41,6 @@ const useStyles = makeStyles(theme => ({
         borderColor: '#3f51b5'
     },
     dropZoneArea:{
-        maxHeight: 200,
-        minHeight: 100,
     },
     dropZoneAreaText:{
         fontSize: 18
@@ -83,18 +83,40 @@ export default function NewTask() {
         links:[],
         files:[],
         complete: false,
+        isLoading: false,
     }
     const classes = useStyles();
     const { state, dispatch } = useContext(StoreContext);
-    const [task, setTask] = useState(baseTask)
+    const [task, setTask] = useState(baseTask);
+    
     const handleClose = () => {
         setTask(baseTask)
         dispatch({ type: StoreActions.CANCEL_CREATE_NEW })
     };
 
-    const handleSave = () =>{
-        dispatch({ type: StoreActions.SAVE, data: task })
+    const handleSave = async () =>{
+        const filesUrls = []
+
+        for (const file of task.files) {
+            await db.storage().ref(`${state.user.uid}/${file.name}`).put(file).then(function(fileSnapshot){
+                return fileSnapshot.ref.getDownloadURL().then((url) => filesUrls.push(url))
+            })
+        }
+        var data = {...task}
+        data.files = [...filesUrls]
+        await db.firestore().collection('tasks').doc(state.user.uid).collection('todo').add(data)
+        handleClose();
     }
+
+    const handleFileChange = async (uploadedFile) =>{
+        setTask({...task, files: [...task.files, uploadedFile], isLoading: false})
+    }
+
+    const handleFileDelete = (file) =>{
+        const list = task.files.filter( x => x != file)
+        setTask({...task, files: list, isLoading: false})
+    }
+    
     return (
         <Modal
             className={classes.modal}
@@ -166,17 +188,21 @@ export default function NewTask() {
                         onChange={(link)=> setTask({...task, links: [...link]})} 
                         />
                         </>
-
+                        <>
+                        <Typography  gutterBottom>
+                            Files
+                        </Typography>
                         <DropzoneArea
                             useChipsForPreview={true}
-                            onChange={() => console.log('kek')}
+                            onDrop={(e) => handleFileChange(e)}
+                            onDelete={(e) => handleFileDelete(e)}
                             dropzoneClass={classes.dropZoneArea}
                             dropzoneParagraphClass={classes.dropZoneAreaText}
                             dropzoneText={"Drag and drop a file here or click"}
-                        />
-
+                         />
+                        </>
                         <div className={classes.footer}>
-                            <Button variant="contained" color="primary" onClick={handleSave}>
+                            <Button variant="contained" color="primary" onClick={handleSave} disabled={task.isLoading}>
                                 Save
                             </Button>
                         </div>

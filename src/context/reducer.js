@@ -33,10 +33,8 @@ export function StoreReducer(state, action) {
         case StoreActions.SAVE: {
             const { data } = action;
             const uid = db.auth().currentUser.uid;
-            //console.log(db.auth())
             const save = db.firestore().collection('tasks').doc(uid).collection('todo').add(data);
-            //var ola = db.firestore().collection('tasks').add({test: 'abc'});
-            save.then(function(){
+            return save.then(function(){
                 return {...state}
             })
         
