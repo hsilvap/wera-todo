@@ -1,7 +1,7 @@
 import React, { useContext, useEffect } from 'react';
 import firebase from 'firebase'
 import { withStyles } from '@material-ui/core/styles';
-import Typography from '@material-ui/core/Typography';
+//import Typography from '@material-ui/core/Typography';
 //import Unsplash , {toJson} from 'unsplash-js';
 
 import Task from './Task';

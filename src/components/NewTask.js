@@ -113,7 +113,7 @@ export default function NewTask() {
     }
 
     const handleFileDelete = (file) =>{
-        const list = task.files.filter( x => x != file)
+        const list = task.files.filter( x => x !== file)
         setTask({...task, files: list, isLoading: false})
     }
     
