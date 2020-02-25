@@ -1,6 +1,8 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { StoreContext } from '../context/store';
 import { StoreActions } from '../context/reducer';
+import { priorities } from './NewTask'
+
 import { makeStyles } from '@material-ui/core/styles';
 import Modal from '@material-ui/core/Modal';
 import Backdrop from '@material-ui/core/Backdrop';
@@ -11,9 +13,8 @@ import { DropzoneArea } from 'material-ui-dropzone'
 import { Slider, Typography } from '@material-ui/core';
 import TagsInput from 'react-tagsinput'
 import DateTimePicker from 'react-datetime-picker';
-import 'react-tagsinput/react-tagsinput.css'
+import 'react-tagsinput/react-tagsinput.css';
 import db from '../db';
-import { priorities } from './NewTask'
 
 const useStyles = makeStyles(theme => ({
     modal: {
@@ -84,6 +85,7 @@ export default function EditTask() {
         var data = {...task}
         data.files = [...filesUrls]
         await db.firestore().collection('tasks').doc(state.user.uid).collection('todo').doc(state.taskEdit.uid).update(data)
+        dispatch({type: StoreActions.SHOW_NOTIFICATION, data: { notification : 'Task updated!'}})
         setsaving(false)
         handleClose();
     }

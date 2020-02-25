@@ -107,6 +107,7 @@ export default function NewTask() {
         var data = {...task}
         data.files = [...filesUrls]
         await db.firestore().collection('tasks').doc(state.user.uid).collection('todo').add(data)
+        dispatch({type: StoreActions.SHOW_NOTIFICATION, data: { notification : 'New task created!'}})
         setsaving(false)
         handleClose();
     }
@@ -159,6 +160,7 @@ export default function NewTask() {
                         </Typography>
                         <DateTimePicker
                             value={task.dueDate}
+                            disableClock
                             onChange={(date)=>{ setTask({...task, dueDate:date})}}
                             minDate={new Date()}
                         />

@@ -9,6 +9,7 @@ import Header from './Header';
 import NewTaskFab from './NewTaskFab';
 import NewTask from './NewTask';
 import EditTask from './EditTask';
+import NotificationSnack from './NotificationSnack';
 
 import { StoreContext } from '../context/store';
 import { StoreActions } from '../context/reducer';
@@ -100,6 +101,7 @@ const Home =({ classes })=> {
             <EditTask/>
             <NewTask/>
             <NewTaskFab/>
+            <NotificationSnack/>
         </div>
     );
 }

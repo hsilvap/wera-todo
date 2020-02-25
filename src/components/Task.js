@@ -73,11 +73,12 @@ const Task = ({todo, userUid}) => {
   }
 
   const handleEditTask = () =>{
-    dispatch({type: StoreActions.EDIT_TASK, data: { todo, userUid}}  )
+    dispatch({type: StoreActions.EDIT_TASK, data: { todo, userUid}})
   }
 
   const handleMarkComplete = (uid) => {
     db.firestore().collection('tasks').doc(userUid).collection('todo').doc(uid).update({complete:true})
+    dispatch({type: StoreActions.SHOW_NOTIFICATION, data: { notification : 'Task completed!'}})
   }
 
   return (

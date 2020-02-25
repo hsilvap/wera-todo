@@ -5,11 +5,13 @@ export const initialState = {
     loggedIn: false,
     createNew: false,
     editTask: false,
+    showNotification: false,
     user: {},
     toDos: [],
     completedToDos: [],
     task: {},
-    taskEdit: {}
+    taskEdit: {},
+    notification: ''
 }
 
 export const StoreContext = React.createContext();
