@@ -113,7 +113,7 @@ export default function EditTask() {
         setTask({ ...task, files: list })
     }
     const handleRemoveExistingFile = (file) =>{
-        const fileList = files.filter(x=> x!= file);
+        const fileList = files.filter(x=> x!== file);
         setfiles(fileList)
     }
 
