@@ -12,6 +12,7 @@ import moment from 'moment'
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import { blueGrey } from '@material-ui/core/colors';
+import { red } from '@material-ui/core/colors';
 import EditIcon from '@material-ui/icons/Edit';
 import DoneIcon from '@material-ui/icons/Done';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
@@ -41,14 +42,16 @@ const useStyles = makeStyles(theme => ({
   expired: {
     backgroundColor: blueGrey[100],
   },
+  expiredLabel: {
+    color: red[500],
+  },
 }));
 
-const Task = ({todo}) => {
+const Task = ({todo, userUid}) => {
   const classes = useStyles();
   const [expanded, setExpanded] = React.useState(false);
   const [downloads, setDownloads] = useState([])
   const isExpired = moment(todo.dueDate.toDate()) < moment(Date.now())
-  console.log(isExpired) 
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
@@ -66,6 +69,10 @@ const Task = ({todo}) => {
     window.open(file)
   }
 
+  const handleMarkComplete = (uid) => {
+    db.firestore().collection('tasks').doc(userUid).collection('todo').doc(uid).update({complete:true})
+  }
+
   return (
     <Card className={clsx(!isExpired ? classes.root : [classes.root, classes.expired])}>
       <CardHeader
@@ -78,7 +85,7 @@ const Task = ({todo}) => {
           </IconButton>
         }
         title={todo.title}
-        subheader={moment(todo.dueDate.toDate()).format('[Complete me before] Do MMMM YYYY, h:mm:ss a')}
+        subheader={<span className={clsx(isExpired ? classes.expiredLabel : '')}> { isExpired ? moment(todo.dueDate.toDate()).format('[EXPIRED - due date] Do MMMM YYYY, h:mm:ss a') :moment(todo.dueDate.toDate()).format('[Complete me before] Do MMMM YYYY, h:mm:ss a')} </span>}
       />
       <CardContent>
         <Typography variant="body2" color="textSecondary" component="p">
@@ -86,7 +93,7 @@ const Task = ({todo}) => {
         </Typography>
       </CardContent>
       <CardActions disableSpacing>
-        <IconButton color="primary" aria-label="Mark complete" >
+        <IconButton onClick={()=> handleMarkComplete(todo.uid)} color="primary" aria-label="Mark complete" >
           <DoneIcon />
         </IconButton>
         <IconButton
@@ -104,7 +111,7 @@ const Task = ({todo}) => {
         <CardContent>
           <Typography paragraph>Reference links:</Typography>
           <List component="nav" aria-label="main mailbox folders">
-          {todo.links.map((link, index) => <ListItem key={`${link} - ${index}`}>{link} </ListItem>)} 
+          {todo.links.map((link, index) => <ListItem component="a" button target="_blank" rel={"noreferrer"} href={link} key={`${link} - ${index}`}> {link} </ListItem>)} 
           </List>
           <Typography paragraph>Files:</Typography>
           {downloads.map((file, index) => <ListItem  component="a" button onClick={()=>handleDownload(file.file)} key={`${file} - ${index}`}>{file.name} </ListItem>)} 

@@ -31,7 +31,7 @@ const useStyles = makeStyles(theme => ({
 
 const PriorityAvatar = ({ priority }) => {
     const classes = useStyles();
-    const prity = priorities.find(x=> x.value ==priority )
+    const prity = priorities.find(x=> x.value === priority )
     return (
         <Avatar title={prity.label} aria-label="priority" className={clsx({ 
             [classes.lightGreen]: priority === 0,

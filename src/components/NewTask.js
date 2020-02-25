@@ -11,8 +11,6 @@ import { DropzoneArea } from 'material-ui-dropzone'
 import { Slider, Typography } from '@material-ui/core';
 import TagsInput from 'react-tagsinput'
 import DateTimePicker from 'react-datetime-picker';
-
-
 import 'react-tagsinput/react-tagsinput.css'
 import db from '../db';
 
@@ -21,6 +19,7 @@ const useStyles = makeStyles(theme => ({
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
+        overflow:'scroll',
     },
     paper: {
         backgroundColor: theme.palette.background.paper,
@@ -41,6 +40,7 @@ const useStyles = makeStyles(theme => ({
         borderColor: '#3f51b5'
     },
     dropZoneArea:{
+        minHeight: 180
     },
     dropZoneAreaText:{
         fontSize: 18

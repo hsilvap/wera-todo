@@ -36,6 +36,7 @@ const styles = () => ({
         flexWrap: 'wrap',
         justifyContent: 'center',
         paddingTop: '5rem',
+        alignItems: 'baseline',
         height: '100%'
     }
 })
@@ -90,7 +91,7 @@ const Home =({ classes })=> {
             <Header />
             <div className={classes.wrapper}>
                 <div className={classes.cardContainer}>
-                { state.toDos.map(todo=> <Task todo={todo} key={todo.uid} />)}
+                { state.toDos.map(todo=> <Task todo={todo} userUid={state.user.uid} key={todo.uid} />)}
                 </div>
             </div>
 
