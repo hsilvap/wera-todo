@@ -10,7 +10,7 @@ import Button from '@material-ui/core/Button';
 import Fade from '@material-ui/core/Fade';
 import TextField from '@material-ui/core/TextField';
 import { DropzoneArea } from 'material-ui-dropzone'
-import { Slider, Typography } from '@material-ui/core';
+import { Slider, Typography, Chip } from '@material-ui/core';
 import TagsInput from 'react-tagsinput'
 import DateTimePicker from 'react-datetime-picker';
 import 'react-tagsinput/react-tagsinput.css';
@@ -21,14 +21,14 @@ const useStyles = makeStyles(theme => ({
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        overflow:'scroll',
+        overflow: 'scroll',
     },
     paper: {
         backgroundColor: theme.palette.background.paper,
         border: '2px solid #000',
         boxShadow: theme.shadows[5],
         padding: theme.spacing(2, 4, 3),
-        maxWidth:'430px'
+        maxWidth: '430px'
     },
     form: {
         display: 'grid',
@@ -38,21 +38,21 @@ const useStyles = makeStyles(theme => ({
         display: 'flex',
         justifyContent: 'flex-end'
     },
-    primaryColor:{
+    primaryColor: {
         borderColor: '#3f51b5'
     },
-    dropZoneArea:{
+    dropZoneArea: {
         minHeight: 180,
         maxWidth: 410,
         overflowY: 'auto'
     },
-    dropZoneAreaText:{
+    dropZoneAreaText: {
         fontSize: 18
     }
 }));
 
 
-const valuetext = ( value ) =>{
+const valuetext = (value) => {
     return priorities[value].label;
 }
 
@@ -61,44 +61,62 @@ export default function EditTask() {
     const { state, dispatch } = useContext(StoreContext);
     const [task, setTask] = useState({});
     const [saving, setsaving] = useState(false)
+    const [files, setfiles] = useState([])
+
     const handleClose = () => {
         dispatch({ type: StoreActions.CANCEL_EDIT_TASK })
     };
-
     useEffect(() => {
-        if(state.taskEdit){
-            setTask({...state.taskEdit})
+        if (state.taskEdit) {
+            let dl = []
+            if (state.taskEdit.files) {
+                state.taskEdit.files.forEach(file => {
+                    const name = db.storage().refFromURL(file).name
+                    dl.push({ name, file })
+                });
+                setfiles(dl)
+            }
+            setTask({ ...state.taskEdit, files:[] })
         }
     }, [state.taskEdit])
 
-    const handleSave = async () =>{
-        setsaving(true)
-        const filesUrls = []
+    const handleSave = async () => {
 
-        /*
-        for (const file of task.files) {
-            await db.storage().ref(`${state.user.uid}/${file.name}`).put(file).then(function(fileSnapshot){
-                return fileSnapshot.ref.getDownloadURL().then((url) => filesUrls.push(url))
-            })
+        try {
+            setsaving(true)
+            const filesUrls = []
+            for (const file of task.files) {
+                await db.storage().ref(`${state.user.uid}/${file.name}`).put(file).then(function (fileSnapshot) {
+                    return fileSnapshot.ref.getDownloadURL().then((url) => filesUrls.push(url))
+                })
+            }
+            var data = { ...task }
+            var currentfiles = files.map(x=>x.file);
+            data.files = [...filesUrls,...currentfiles]
+            await db.firestore().collection('tasks').doc(state.user.uid).collection('todo').doc(state.taskEdit.uid).update(data)
+            dispatch({ type: StoreActions.SHOW_NOTIFICATION, data: { notification: 'Task updated!' } })
+            setsaving(false)
+            handleClose();
+        } catch (error) {
+            dispatch({ type: StoreActions.SHOW_NOTIFICATION, data: { notification: `Error!: ${error.message}` } })
+            setsaving(false)
         }
-        */
-        var data = {...task}
-        data.files = [...filesUrls]
-        await db.firestore().collection('tasks').doc(state.user.uid).collection('todo').doc(state.taskEdit.uid).update(data)
-        dispatch({type: StoreActions.SHOW_NOTIFICATION, data: { notification : 'Task updated!'}})
-        setsaving(false)
-        handleClose();
+
     }
 
-    const handleFileChange = async (uploadedFile) =>{
-        setTask({...task, files: [...task.files, uploadedFile]})
+    const handleFileChange = async (uploadedFile) => {
+        setTask({ ...task, files: [...task.files, uploadedFile] })
     }
 
-    const handleFileDelete = (file) =>{
-        const list = task.files.filter( x => x !== file)
-        setTask({...task, files: list})
+    const handleFileDelete = (file) => {
+        const list = task.files.filter(x => x !== file)
+        setTask({ ...task, files: list })
     }
-    
+    const handleRemoveExistingFile = (file) =>{
+        const fileList = files.filter(x=> x!= file);
+        setfiles(fileList)
+    }
+
     return (
         <Modal
             className={classes.modal}
@@ -120,72 +138,87 @@ export default function EditTask() {
                             required
                             label="Title"
                             value={task.title}
-                            onChange={(e)=>setTask({...task, title:e.target.value})}
-                            />
+                            onChange={(e) => setTask({ ...task, title: e.target.value })}
+                        />
                         <TextField
                             label="Description"
                             multiline
                             rows="2"
                             rowsMax="4"
                             value={task.description}
-                            onChange={(e)=>setTask({...task, description:e.target.value})}
+                            onChange={(e) => setTask({ ...task, description: e.target.value })}
 
                         />
 
                         {task.dueDate && <>
-                        <Typography   gutterBottom>
-                            Due date
+                            <Typography gutterBottom>
+                                Due date
                         </Typography>
-                        <DateTimePicker
-                            value={state.taskEdit.dueDate.toDate()}
-                            disableClock
-                            onChange={(date)=>{ setTask({...task, dueDate:date})}}
-                            minDate={new Date()}
-                        />
+                            <DateTimePicker
+                                value={state.taskEdit.dueDate.toDate()}
+                                disableClock
+                                onChange={(date) => { setTask({ ...task, dueDate: date }) }}
+                                minDate={new Date()}
+                            />
                         </>}
 
                         <>
-                        <Typography  gutterBottom>
-                            Priority
+                            <Typography gutterBottom>
+                                Priority
                         </Typography>
-                        <Slider
-                         defaultValue={1}
-                         aria-labelledby="discrete-slider"
-                         valueLabelDisplay="auto"
-                         valueLabelFormat={valuetext}
-                         step={1}
-                         marks={priorities}
-                         min={0}
-                         max={4}
-                         value={task.priority}
-                         onChange={(e,newVal) => setTask({...task, priority: newVal})}
-                        />
+                            <Slider
+                                defaultValue={1}
+                                aria-labelledby="discrete-slider"
+                                valueLabelDisplay="auto"
+                                valueLabelFormat={valuetext}
+                                step={1}
+                                marks={priorities}
+                                min={0}
+                                max={4}
+                                value={task.priority}
+                                onChange={(e, newVal) => setTask({ ...task, priority: newVal })}
+                            />
                         </>
                         <>
-                        <Typography  gutterBottom>
-                            Links
+                            <Typography gutterBottom>
+                                Links
                         </Typography>
-                        <TagsInput 
-                        focusedClassName={classes.primaryColor}
-                        inputProps={{placeholder: 'Add'}}
-                        value={task.links}
-                        onlyUnique
-                        onChange={(link)=> setTask({...task, links: [...link]})} 
-                        />
+                            <TagsInput
+                                focusedClassName={classes.primaryColor}
+                                inputProps={{ placeholder: 'Add' }}
+                                value={task.links}
+                                onlyUnique
+                                onChange={(link) => setTask({ ...task, links: [...link] })}
+                            />
                         </>
-                        <>
-                        <Typography  gutterBottom>
-                            Files
+                        {task.files && <>
+                            <Typography gutterBottom>
+                                Current Files
                         </Typography>
-                        <DropzoneArea
-                            initialFiles={task.files}
-                            useChipsForPreview={true}
-                            onDrop={(e) => handleFileChange(e)}
-                            onDelete={(e) => handleFileDelete(e)}
-                            dropzoneClass={classes.dropZoneArea}
-                            dropzoneParagraphClass={classes.dropZoneAreaText}
-                            dropzoneText={"Drag and drop a file here or click"}
-                         />
+                            <div style={{display: 'flex'}}> 
+                                {files.map(file =>
+                                    <Chip
+                                        style={{margin: '0px 5px'}}
+                                        title={file.name}
+                                        key={file.file}
+                                        onDelete={() => handleRemoveExistingFile(file)}
+                                        label={file.name} />
+                                )}
+                            </div>
+                        </>
+                        }
+                        <>
+                            <Typography gutterBottom>
+                                Add Files
+                        </Typography>
+                            <DropzoneArea
+                                useChipsForPreview={true}
+                                onDrop={(e) => handleFileChange(e)}
+                                onDelete={(e) => handleFileDelete(e)}
+                                dropzoneClass={classes.dropZoneArea}
+                                dropzoneParagraphClass={classes.dropZoneAreaText}
+                                dropzoneText={"Drag and drop a file here or click"}
+                            />
                         </>
                         <div className={classes.footer}>
                             <Button variant="contained" color="primary" onClick={handleSave} disabled={saving}>

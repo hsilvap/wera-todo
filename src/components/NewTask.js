@@ -209,7 +209,7 @@ export default function NewTask() {
                          />
                         </>
                         <div className={classes.footer}>
-                            <Button variant="contained" color="primary" onClick={handleSave} disabled={saving}>
+                            <Button variant="contained" color="primary" onClick={handleSave} disabled={saving || !task.dueDate }>
                                 Save
                             </Button>
                         </div>
