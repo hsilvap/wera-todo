@@ -4,10 +4,12 @@ import { StoreReducer } from './reducer';
 export const initialState = {
     loggedIn: false,
     createNew: false,
+    editTask: false,
     user: {},
     toDos: [],
     completedToDos: [],
     task: {},
+    taskEdit: {}
 }
 
 export const StoreContext = React.createContext();

@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState , useContext } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
 import Card from '@material-ui/core/Card';
@@ -16,6 +16,8 @@ import { red } from '@material-ui/core/colors';
 import EditIcon from '@material-ui/icons/Edit';
 import DoneIcon from '@material-ui/icons/Done';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import { StoreActions } from '../context/reducer';
+import { StoreContext } from '../context/store';
 
 import db from '../db';
 import PriorityAvatar from './PriorityAvatar';
@@ -49,6 +51,7 @@ const useStyles = makeStyles(theme => ({
 
 const Task = ({todo, userUid}) => {
   const classes = useStyles();
+  const { dispatch } = useContext(StoreContext);
   const [expanded, setExpanded] = React.useState(false);
   const [downloads, setDownloads] = useState([])
   const isExpired = moment(todo.dueDate.toDate()) < moment(Date.now())
@@ -69,6 +72,10 @@ const Task = ({todo, userUid}) => {
     window.open(file)
   }
 
+  const handleEditTask = () =>{
+    dispatch({type: StoreActions.EDIT_TASK, data: { todo, userUid}}  )
+  }
+
   const handleMarkComplete = (uid) => {
     db.firestore().collection('tasks').doc(userUid).collection('todo').doc(uid).update({complete:true})
   }
@@ -80,7 +87,7 @@ const Task = ({todo, userUid}) => {
             <PriorityAvatar priority={todo.priority}/>
         }
         action={
-          <IconButton aria-label="settings">
+          <IconButton onClick={()=> handleEditTask()} aria-label="settings">
             <EditIcon />
           </IconButton>
         }

@@ -7,6 +7,9 @@ import { withStyles } from '@material-ui/core/styles';
 import Task from './Task';
 import Header from './Header';
 import NewTaskFab from './NewTaskFab';
+import NewTask from './NewTask';
+import EditTask from './EditTask';
+
 import { StoreContext } from '../context/store';
 import { StoreActions } from '../context/reducer';
 import db from '../db';
@@ -94,7 +97,8 @@ const Home =({ classes })=> {
                 { state.toDos.map(todo=> <Task todo={todo} userUid={state.user.uid} key={todo.uid} />)}
                 </div>
             </div>
-
+            <EditTask/>
+            <NewTask/>
             <NewTaskFab/>
         </div>
     );

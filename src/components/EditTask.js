@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { StoreContext } from '../context/store';
 import { StoreActions } from '../context/reducer';
 import { makeStyles } from '@material-ui/core/styles';
@@ -13,6 +13,7 @@ import TagsInput from 'react-tagsinput'
 import DateTimePicker from 'react-datetime-picker';
 import 'react-tagsinput/react-tagsinput.css'
 import db from '../db';
+import { priorities } from './NewTask'
 
 const useStyles = makeStyles(theme => ({
     modal: {
@@ -41,72 +42,48 @@ const useStyles = makeStyles(theme => ({
     },
     dropZoneArea:{
         minHeight: 180,
-        maxWidth: 410
+        maxWidth: 410,
+        overflowY: 'auto'
     },
     dropZoneAreaText:{
         fontSize: 18
     }
 }));
 
-export const priorities = [
-    {
-        value: 0,
-        label: 'Low',
-      },
-      {
-        value: 1,
-        label: 'Medium',
-      },
-      {
-        value: 2,
-        label: 'High',
-      },
-      {
-        value: 3,
-        label: 'Urgent',
-      },
-      {
-        value: 4,
-        label: 'Critical',
-      },
-];
 
 const valuetext = ( value ) =>{
     return priorities[value].label;
 }
 
-export default function NewTask() {
-    const baseTask  = {
-        title:"",
-        description:"",
-        dueDate:"",
-        priority:1,
-        links:[],
-        files:[],
-        complete: false,
-    }
+export default function EditTask() {
     const classes = useStyles();
     const { state, dispatch } = useContext(StoreContext);
-    const [task, setTask] = useState(baseTask);
+    const [task, setTask] = useState({});
     const [saving, setsaving] = useState(false)
-    
     const handleClose = () => {
-        setTask(baseTask)
-        dispatch({ type: StoreActions.CANCEL_CREATE_NEW })
+        dispatch({ type: StoreActions.CANCEL_EDIT_TASK })
     };
+
+    useEffect(() => {
+        if(state.taskEdit){
+            setTask({...state.taskEdit})
+        }
+    }, [state.taskEdit])
 
     const handleSave = async () =>{
         setsaving(true)
         const filesUrls = []
 
+        /*
         for (const file of task.files) {
             await db.storage().ref(`${state.user.uid}/${file.name}`).put(file).then(function(fileSnapshot){
                 return fileSnapshot.ref.getDownloadURL().then((url) => filesUrls.push(url))
             })
         }
+        */
         var data = {...task}
         data.files = [...filesUrls]
-        await db.firestore().collection('tasks').doc(state.user.uid).collection('todo').add(data)
+        await db.firestore().collection('tasks').doc(state.user.uid).collection('todo').doc(state.taskEdit.uid).update(data)
         setsaving(false)
         handleClose();
     }
@@ -123,7 +100,7 @@ export default function NewTask() {
     return (
         <Modal
             className={classes.modal}
-            open={state.createNew}
+            open={state.editTask}
             onClose={handleClose}
             closeAfterTransition
             BackdropComponent={Backdrop}
@@ -132,9 +109,9 @@ export default function NewTask() {
                 timeout: 500,
             }}
         >
-            <Fade in={state.createNew}>
+            <Fade in={state.editTask}>
                 <div className={classes.paper}>
-                    <h2 id="transition-modal-title">New Task</h2>
+                    <h2 id="transition-modal-title">Edit Task</h2>
 
                     <form className={classes.form}>
                         <TextField
@@ -153,16 +130,17 @@ export default function NewTask() {
 
                         />
 
-                        <>
+                        {task.dueDate && <>
                         <Typography   gutterBottom>
                             Due date
                         </Typography>
                         <DateTimePicker
-                            value={task.dueDate}
+                            value={state.taskEdit.dueDate.toDate()}
+                            disableClock
                             onChange={(date)=>{ setTask({...task, dueDate:date})}}
                             minDate={new Date()}
                         />
-                        </>
+                        </>}
 
                         <>
                         <Typography  gutterBottom>
@@ -198,6 +176,7 @@ export default function NewTask() {
                             Files
                         </Typography>
                         <DropzoneArea
+                            initialFiles={task.files}
                             useChipsForPreview={true}
                             onDrop={(e) => handleFileChange(e)}
                             onDelete={(e) => handleFileDelete(e)}
@@ -208,7 +187,7 @@ export default function NewTask() {
                         </>
                         <div className={classes.footer}>
                             <Button variant="contained" color="primary" onClick={handleSave} disabled={saving}>
-                                Save
+                                Update
                             </Button>
                         </div>
                     </form>

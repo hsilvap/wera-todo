@@ -6,8 +6,10 @@ export const StoreActions = {
     LOGIN: 'LOGIN',
     LOGOUT: 'LOGOUT',
     CREATE_NEW: 'CREATE_NEW',
+    EDIT_TASK: 'EDIT_TASK',
     SAVE: 'SAVE',
     CANCEL_CREATE_NEW: 'CANCEL_CREATE_NEW',
+    CANCEL_EDIT_TASK: 'CANCEL_EDIT_TASK',
     RECIEVE_TASKS: 'RECIEVE_TASKS',
 }
 
@@ -41,6 +43,13 @@ export function StoreReducer(state, action) {
         }
         case StoreActions.CANCEL_CREATE_NEW: {
             return {...state, createNew :false};
+        }
+        case StoreActions.EDIT_TASK: {
+            const { data } = action;
+            return {...state, editTask :true, taskEdit: {...data.todo, ...data.uid}};
+        }
+        case StoreActions.CANCEL_EDIT_TASK: {
+            return {...state, editTask :false};
         }
         default: {
             throw new Error(`Unhandled action type: ${action.type}`)

@@ -5,7 +5,6 @@ import db from '../db';
 import Button from '@material-ui/core/Button';
 import { withStyles } from '@material-ui/core/styles';
 import { Icon, Avatar } from '@material-ui/core';
-import NewTask from './NewTask';
 import { StoreContext } from '../context/store';
 import { StoreActions } from '../context/reducer';
 
@@ -77,7 +76,6 @@ const Header = ({ classes }) => {
 
     return (
         <>
-        <NewTask/>
         <header className={classes.root}>
             <div className={classes.container}>
                 <Icon >style</Icon>
