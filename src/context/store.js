@@ -6,6 +6,7 @@ export const initialState = {
     createNew: false,
     editTask: false,
     showNotification: false,
+    showCompleted: false,
     user: {},
     toDos: [],
     completedToDos: [],

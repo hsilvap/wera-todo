@@ -3,10 +3,15 @@ import firebase from 'firebase'
 
 import db from '../db';
 import Button from '@material-ui/core/Button';
+import Switch from '@material-ui/core/Switch';
+import FormGroup from '@material-ui/core/FormGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
 import { withStyles } from '@material-ui/core/styles';
 import { Icon, Avatar } from '@material-ui/core';
 import { StoreContext } from '../context/store';
 import { StoreActions } from '../context/reducer';
+import { purple } from '@material-ui/core/colors';
+import { green } from '@material-ui/core/colors';
 
 const styles = () => ({
     root: {
@@ -29,15 +34,36 @@ const styles = () => ({
     },
     button: {
         color: '#FFF !important',
+    },
+    colorPrimary:{
+        color: 'green'
     }
 })
 
+const PurpleSwitch = withStyles({
+    switchBase: {
+      color: 'white',
+      '&$checked': {
+        color: 'white',
+      },
+      '&$checked + $track': {
+        backgroundColor: green['A200'],
+      },
+    },
+    checked: {},
+    track: {},
+  })(Switch);
+  
 
 const Header = ({ classes }) => {
     const {state, dispatch} = useContext(StoreContext);
     const handleOpen = () => {
         dispatch({type: StoreActions.CREATE_NEW})
     };
+
+    const handleToggle = () =>{
+        dispatch({type: StoreActions.TOGGLE_COMPLETED, data: !state.showCompleted })
+    }
 
     const saveMessagingDeviceToken = () => {
         firebase.messaging().getToken().then(function (currentToken) {
@@ -91,8 +117,19 @@ const Header = ({ classes }) => {
                     </div>
 
                     <Button onClick={handleOpen} className={classes.button}>
-                        <Icon >addbox</Icon> &nbsp; Add new
+                        <Icon >addbox</Icon> &nbsp; Add new &nbsp; 
                     </Button>
+                    <FormControlLabel 
+                    control={
+                        <PurpleSwitch
+                        className={classes.colorPrimary}
+                        checked={state.showCompleted}
+                        onChange={()=> handleToggle()}
+                        value={state.showCompleted}
+                        color="primary"
+                        />
+                        } 
+                    label="Show completed" />
                     <Button onClick={signOut} className={classes.button}>
                         Sign-out
                     </Button>

@@ -13,6 +13,7 @@ export const StoreActions = {
     RECIEVE_TASKS: 'RECIEVE_TASKS',
     SHOW_NOTIFICATION: 'SHOW_NOTIFICATION',
     HIDE_NOTIFICATION: 'HIDE_NOTIFICATION',
+    TOGGLE_COMPLETED: 'TOGGLE_COMPLETED',
 }
 
 
@@ -28,11 +29,14 @@ export function StoreReducer(state, action) {
         case StoreActions.CREATE_NEW: {
             return { ...state, createNew: true };
         }
-
         case StoreActions.RECIEVE_TASKS: {
             const { data } = action;
             const prev = { ...state }
             return { ...state, toDos: [...prev.toDos, ...data] };
+        }
+        case StoreActions.TOGGLE_COMPLETED: {
+            const { data } = action;
+            return { ...state, showCompleted: data };
         }
         case StoreActions.SAVE: {
             const { data } = action;

@@ -74,7 +74,7 @@ const Home =({ classes })=> {
                 const profilePicUrl = firebase.auth().currentUser.photoURL || '/images/profile_placeholder.png';
                 const userName = firebase.auth().currentUser.displayName;
                 const uid = firebase.auth().currentUser.uid;
-                query = db.firestore().collection('tasks').doc(uid).collection('todo').orderBy("dueDate", "asc").where("complete", "==", false);
+                query = db.firestore().collection('tasks').doc(uid).collection('todo').orderBy("dueDate", "asc").where("complete", "==", state.showCompleted);
                 query.onSnapshot(function (querySnapshot) {
                     const tasks = [];
                     querySnapshot.forEach(function (doc) {
@@ -88,7 +88,7 @@ const Home =({ classes })=> {
             }
         })
         return () => query
-    }, [dispatch])
+    }, [dispatch,state.showCompleted])
 
     return (
         <div className="App">
