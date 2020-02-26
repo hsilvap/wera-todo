@@ -51,7 +51,7 @@ const useStyles = makeStyles(theme => ({
 
 const Task = ({todo, userUid}) => {
   const classes = useStyles();
-  const { dispatch } = useContext(StoreContext);
+  const { dispatch, state } = useContext(StoreContext);
   const [expanded, setExpanded] = React.useState(false);
   const [downloads, setDownloads] = useState([])
   const isExpired = moment(todo.dueDate.toDate()) < moment(Date.now())
@@ -88,7 +88,7 @@ const Task = ({todo, userUid}) => {
             <PriorityAvatar priority={todo.priority}/>
         }
         action={
-          <IconButton onClick={()=> handleEditTask()} aria-label="settings">
+          !state.showCompleted &&  <IconButton onClick={()=> handleEditTask()} aria-label="settings">
             <EditIcon />
           </IconButton>
         }
@@ -101,9 +101,9 @@ const Task = ({todo, userUid}) => {
         </Typography>
       </CardContent>
       <CardActions disableSpacing>
-        <IconButton onClick={()=> handleMarkComplete(todo.uid)} color="primary" aria-label="Mark complete" >
+        { !state.showCompleted && <IconButton onClick={()=> handleMarkComplete(todo.uid)} color="primary" aria-label="Mark complete" >
           <DoneIcon />
-        </IconButton>
+        </IconButton>}
         <IconButton
           className={clsx(classes.expand, {
             [classes.expandOpen]: expanded,
