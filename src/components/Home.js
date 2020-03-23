@@ -39,7 +39,6 @@ const styles = () => ({
         display: 'flex',
         flexWrap: 'wrap',
         justifyContent: 'center',
-        paddingTop: '5rem',
         alignItems: 'baseline',
         height: '100%'
     }

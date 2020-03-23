@@ -23,7 +23,7 @@ const NotificationSnack = () => {
             horizontal: 'right',
         }}
         open={state.showNotification}
-        autoHideDuration={6000}
+        autoHideDuration={2000}
         onClose={handleClose}
         message={state.notification}
         action={
