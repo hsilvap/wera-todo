@@ -26,7 +26,7 @@ import PriorityAvatar from './PriorityAvatar';
 const useStyles = makeStyles(theme => ({
   root: {
     maxWidth: 345,
-    margin: '20px 20px'
+    margin: '5px 5px'
   },
   media: {
     height: 0,

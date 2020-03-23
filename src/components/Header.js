@@ -38,7 +38,7 @@ const styles = () => ({
     }
 })
 
-const PurpleSwitch = withStyles({
+const CustomSwitch = withStyles({
     switchBase: {
       color: 'white',
       '&$checked': {
@@ -120,7 +120,7 @@ const Header = ({ classes }) => {
                     </Button>
                     <FormControlLabel 
                     control={
-                        <PurpleSwitch
+                        <CustomSwitch
                         className={classes.colorPrimary}
                         checked={state.showCompleted}
                         onChange={()=> handleToggle()}

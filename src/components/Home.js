@@ -10,6 +10,7 @@ import NewTaskFab from './NewTaskFab';
 import NewTask from './NewTask';
 import EditTask from './EditTask';
 import NotificationSnack from './NotificationSnack';
+import WeeklySideBar from './WeeklyTasks/WeeklySideBar';
 
 import { StoreContext } from '../context/store';
 import { StoreActions } from '../context/reducer';
@@ -28,6 +29,7 @@ const styles = () => ({
         width: '100%',
         height: 'calc(100vh - 62px)',
         position: 'fixed',
+        display: 'flex',
         //backgroundImage: 'url(' + 'https://media3.giphy.com/media/1AgjJa5aX1vmIvx8Zr/giphy.gif' +')',
         backgroundSize: 'cover',
         backgroundPosition: 'center',
@@ -98,6 +100,7 @@ const Home =({ classes })=> {
         <div className="App">
             <Header />
             <div className={classes.wrapper}>
+                <WeeklySideBar/>
                 <div className={classes.cardContainer}>
                 { state.showCompleted == false ? state.toDos.map(todo=> <Task todo={todo} userUid={state.user.uid} key={todo.uid} />)
                  :  state.completedToDos.map(todo=> <Task todo={todo} userUid={state.user.uid} key={todo.uid}/>)
