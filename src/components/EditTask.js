@@ -66,6 +66,7 @@ export default function EditTask() {
     const handleClose = () => {
         dispatch({ type: StoreActions.CANCEL_EDIT_TASK })
     };
+
     useEffect(() => {
         if (state.taskEdit) {
             let dl = []
@@ -76,7 +77,7 @@ export default function EditTask() {
                 });
                 setfiles(dl)
             }
-            setTask({ ...state.taskEdit, files:[] })
+            setTask({ ...state.taskEdit, initialDueDate:state.taskEdit.dueDate, editedDate: false, files:[] })
         }
     }, [state.taskEdit])
 
@@ -155,9 +156,9 @@ export default function EditTask() {
                                 Due date
                         </Typography>
                             <DateTimePicker
-                                value={state.taskEdit.dueDate.toDate()}
+                                value={task.editedDate ? task.dueDate : task.initialDueDate.toDate() }
                                 disableClock
-                                onChange={(date) => { setTask({ ...task, dueDate: date }) }}
+                                onChange={(date) => {  setTask({ ...task, dueDate: date, editedDate: true }) }}
                                 minDate={new Date()}
                             />
                         </>}
