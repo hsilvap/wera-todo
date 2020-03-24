@@ -100,12 +100,15 @@ const Home =({ classes })=> {
         <div className="App">
             <Header />
             <div className={classes.wrapper}>
-                <WeeklySideBar/>
-                <div className={classes.cardContainer}>
-                { state.showCompleted == false ? state.toDos.map(todo=> <Task todo={todo} userUid={state.user.uid} key={todo.uid} />)
-                 :  state.completedToDos.map(todo=> <Task todo={todo} userUid={state.user.uid} key={todo.uid}/>)
-                }
-                </div>
+                {state.loggedIn && 
+                <>
+                    <WeeklySideBar/>
+                    <div className={classes.cardContainer}>
+                        { state.showCompleted == false ? state.toDos.map(todo=> <Task todo={todo} userUid={state.user.uid} key={todo.uid} />)
+                        :  state.completedToDos.map(todo=> <Task todo={todo} userUid={state.user.uid} key={todo.uid}/>)
+                        }
+                    </div>
+                </>}
             </div>
             <EditTask/>
             <NewTask/>
