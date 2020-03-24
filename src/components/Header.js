@@ -28,7 +28,8 @@ const styles = () => ({
         alignItems: 'center'
     },
     usernameContainer:{
-        paddingBottom: 6
+        paddingBottom: 6,
+        userSelect:'none',
     },
     button: {
         color: '#FFF !important',
@@ -104,7 +105,7 @@ const Header = ({ classes }) => {
         <header className={classes.root}>
             <div className={classes.container}>
                 <Icon >style</Icon>
-                <h3>&nbsp; My to-do's</h3>
+                <h3 style={{userSelect:'none'}}>&nbsp; My to-do's</h3>
             </div>
 
             <div id="user-container" className={classes.container}>
