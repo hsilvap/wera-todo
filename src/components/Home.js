@@ -1,8 +1,5 @@
-import React, { useContext, useEffect } from 'react';
-import firebase from 'firebase'
+import React, { useContext } from 'react';
 import { withStyles } from '@material-ui/core/styles';
-//import Typography from '@material-ui/core/Typography';
-//import Unsplash , {toJson} from 'unsplash-js';
 
 import Task from './Task';
 import Header from './Header';
@@ -13,10 +10,9 @@ import NotificationSnack from './NotificationSnack';
 import WeeklySideBar from './WeeklyTasks/WeeklySideBar';
 
 import { StoreContext } from '../context/store';
-import { StoreActions } from '../context/reducer';
-import db from '../db';
-import './../App.css';
+import { LoadMondayTasks, LoadTasks } from '../hooks/useDb';
 
+import './../App.css';
 
 
 const styles = () => ({
@@ -30,7 +26,6 @@ const styles = () => ({
         height: 'calc(100vh - 62px)',
         position: 'fixed',
         display: 'flex',
-        //backgroundImage: 'url(' + 'https://media3.giphy.com/media/1AgjJa5aX1vmIvx8Zr/giphy.gif' +')',
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat',
@@ -48,53 +43,9 @@ const styles = () => ({
 
 
 const Home =({ classes })=> {
-    const { state, dispatch } = useContext(StoreContext)
-    //const unsplash = new Unsplash({ accessKey: `${process.env.UNSPLASH_ACCESS}`,  secret: `${process.env.UNSPLASH_SECRET}`});
-
-    useEffect(() => {
-        /*
-
-        unsplash.photos.getRandomPhoto()
-        .then(toJson)
-        .then(json => {
-            console.log(json)
-            // Your code
-        });
-        fetch('https://api.unsplash.com/photos/random', { headers: {
-            'Authorization': `${process.env.UNSPLASH_ACCESS}`
-          }
-        }).then(data => data.json()).then(response=> console.log(response))
-        */
-
-    }, [])
-
-    useEffect(() => {
-        var query;
-        db.auth().onAuthStateChanged((user) => {
-            if (user) {
-                const profilePicUrl = firebase.auth().currentUser.photoURL || '/images/profile_placeholder.png';
-                const userName = firebase.auth().currentUser.displayName;
-                const uid = firebase.auth().currentUser.uid;
-                query = db.firestore().collection('tasks').doc(uid).collection('todo').orderBy("dueDate", "asc");
-                query.onSnapshot(function (querySnapshot) {
-                    const tasks = [];
-                    const completedTasks = [];
-                    querySnapshot.forEach(function (doc) {
-                        if(doc.data().complete == false){
-                            tasks.push({...doc.data(), uid : doc.id});
-                        }else{
-                            completedTasks.push({...doc.data(), uid : doc.id});
-                        }
-                    });
-                    dispatch({ type: StoreActions.LOGIN, data: { loggedIn: true, user: { profilePicUrl, userName, uid }, toDos: tasks , completedToDos: completedTasks } })
-                })
-
-            } else {
-                dispatch({ type: StoreActions.LOGOUT })
-            }
-        })
-        return () => query
-    }, [dispatch])
+    const { state } = useContext(StoreContext)
+    LoadTasks()
+    LoadMondayTasks()
 
     return (
         <div className="App">
@@ -104,7 +55,7 @@ const Home =({ classes })=> {
                 <>
                     <WeeklySideBar/>
                     <div className={classes.cardContainer}>
-                        { state.showCompleted == false ? state.toDos.map(todo=> <Task todo={todo} userUid={state.user.uid} key={todo.uid} />)
+                        { state.showCompleted === false ? state.toDos.map(todo=> <Task todo={todo} userUid={state.user.uid} key={todo.uid} />)
                         :  state.completedToDos.map(todo=> <Task todo={todo} userUid={state.user.uid} key={todo.uid}/>)
                         }
                     </div>

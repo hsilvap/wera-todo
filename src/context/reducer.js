@@ -14,6 +14,7 @@ export const StoreActions = {
     SHOW_NOTIFICATION: 'SHOW_NOTIFICATION',
     HIDE_NOTIFICATION: 'HIDE_NOTIFICATION',
     TOGGLE_COMPLETED: 'TOGGLE_COMPLETED',
+    SET_MONDAY:'SET_MONDAY'
 }
 
 
@@ -56,6 +57,9 @@ export function StoreReducer(state, action) {
         }
         case StoreActions.CANCEL_EDIT_TASK: {
             return { ...state, editTask: false };
+        } case StoreActions.SET_MONDAY: {
+            const { data } = action;
+            return { ...state, weeklyTasks:{ monday : data}};
         }
         case StoreActions.SHOW_NOTIFICATION: {
             const { data } = action;

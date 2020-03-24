@@ -8,6 +8,13 @@ export const initialState = {
     showNotification: false,
     showCompleted: false,
     user: {},
+    weeklyTasks:{
+        monday: [],
+        tuesday: [],
+        wednesday: [],
+        thursday: [],
+        friday: []
+    },
     toDos: [],
     completedToDos: [],
     task: {},
