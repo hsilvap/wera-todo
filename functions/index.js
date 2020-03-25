@@ -81,7 +81,7 @@ exports.scheduledEmailReminder = functions.pubsub.schedule('45 9 * * 1-5')
                                     };
                                     return sgMail
                                         .send(msg)
-                                        .then(() => { return 'Email sent' }).catch((error) => console.log(error));
+                                        .then(() => { console.log('Email sent') }).catch((error) => console.log(error));
 
                                 })
                                 .catch(function (error) {
