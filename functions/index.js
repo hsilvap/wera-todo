@@ -36,8 +36,8 @@ exports.scheduledEmailReminder = functions.pubsub.schedule('45 9 * * 1-5')
 
         var db = admin.firestore();
         var tasksRef = db.collection('tasks');
-        var date = moment().add(2, 'd')
-        var dateLimit = moment().add(3, 'd')
+        var date = moment().add(2, 'd').startOf('day')
+        var dateLimit = moment().add(3, 'd').endOf('day')
 
         return tasksRef.get()
             .then(snapshot => {
@@ -72,7 +72,7 @@ exports.scheduledEmailReminder = functions.pubsub.schedule('45 9 * * 1-5')
                                     const msg = {
                                         to: usermail,
                                         from: 'reminder@wera-todo.firebaseapp.com',
-                                        subject: 'Your task summary for the next 2 days!',
+                                        subject: 'Your task summary for the next 2 days',
                                         html: `<h3>Hello ${userRecord.toJSON().displayName}!</h3> You have <strong>${tasklist.length}</strong> pending tasks, they are due date the next 2 days. 
                                         <ul>
                                             ${tasklist.map(task => `<li> ${task} </li>`).join('')}
