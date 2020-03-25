@@ -2,7 +2,7 @@ import { useContext, useEffect } from 'react';
 
 import { StoreContext } from '../context/store';
 import { StoreActions } from '../context/reducer';
-import db, { mondayCollectionRef, getCurrentUser, taskCollectionRef } from '../db';
+import db, { mondayCollectionRef, getCurrentUser, taskCollectionRef, tuesdayCollectionRef, wednesdayCollectionRef, thursdayCollectionRef, fridayCollectionRef } from '../db';
 
 
 export function LoadMondayTasks (){
@@ -19,6 +19,93 @@ export function LoadMondayTasks (){
                 tasks.push({ ...doc.data(), uid: doc.id });
             });
             dispatch({ type: StoreActions.SET_MONDAY, data: tasks});
+        })
+       }
+    })
+       return () => query;
+    }, [dispatch])  
+}
+
+export function LoadTuesdayTasks (){
+    const { dispatch } = useContext(StoreContext)
+
+    useEffect(() => {
+    var query;
+        db.auth().onAuthStateChanged((user) => {
+        if (user) {
+        query = tuesdayCollectionRef(getCurrentUser().uid);
+        query.onSnapshot(function (querySnapshot) {
+            const tasks = [];
+            querySnapshot.forEach(function (doc) {
+                tasks.push({ ...doc.data(), uid: doc.id });
+            });
+            dispatch({ type: StoreActions.SET_TUESDAY, data: tasks});
+        })
+       }
+    })
+       return () => query;
+    }, [dispatch])
+   
+}
+
+export function LoadWednesdayTasks (){
+    const { dispatch } = useContext(StoreContext)
+
+    useEffect(() => {
+    var query;
+        db.auth().onAuthStateChanged((user) => {
+        if (user) {
+        query = wednesdayCollectionRef(getCurrentUser().uid);
+        query.onSnapshot(function (querySnapshot) {
+            const tasks = [];
+            querySnapshot.forEach(function (doc) {
+                tasks.push({ ...doc.data(), uid: doc.id });
+            });
+            dispatch({ type: StoreActions.SET_WEDNESDAY, data: tasks});
+        })
+       }
+    })
+       return () => query;
+    }, [dispatch])
+   
+}
+
+export function LoadThursdayTasks (){
+    const { dispatch } = useContext(StoreContext)
+
+    useEffect(() => {
+    var query;
+        db.auth().onAuthStateChanged((user) => {
+        if (user) {
+        query = thursdayCollectionRef(getCurrentUser().uid);
+        query.onSnapshot(function (querySnapshot) {
+            const tasks = [];
+            querySnapshot.forEach(function (doc) {
+                tasks.push({ ...doc.data(), uid: doc.id });
+            });
+            dispatch({ type: StoreActions.SET_THURSDAY, data: tasks});
+        })
+       }
+    })
+       return () => query;
+    }, [dispatch])
+   
+}
+
+export function LoadFridayTasks (){
+    const { dispatch } = useContext(StoreContext)
+
+    useEffect(() => {
+    var query;
+        db.auth().onAuthStateChanged((user) => {
+        if (user) {
+        query = fridayCollectionRef(getCurrentUser().uid);
+        query.onSnapshot(function (querySnapshot) {
+            const tasks = [];
+            querySnapshot.forEach(function (doc) {
+                tasks.push({ ...doc.data(), uid: doc.id });
+            });
+            dispatch({ type: StoreActions.SET_FRIDAY, data: tasks});
         })
        }
     })

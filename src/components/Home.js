@@ -10,7 +10,7 @@ import NotificationSnack from './NotificationSnack';
 import WeeklySideBar from './WeeklyTasks/WeeklySideBar';
 
 import { StoreContext } from '../context/store';
-import { LoadMondayTasks, LoadTasks } from '../hooks/useDb';
+import { LoadMondayTasks, LoadTasks, LoadTuesdayTasks, LoadWednesdayTasks, LoadFridayTasks, LoadThursdayTasks } from '../hooks/useDb';
 
 import './../App.css';
 
@@ -46,6 +46,10 @@ const Home =({ classes })=> {
     const { state } = useContext(StoreContext)
     LoadTasks()
     LoadMondayTasks()
+    LoadTuesdayTasks()
+    LoadWednesdayTasks()
+    LoadThursdayTasks()
+    LoadFridayTasks()
 
     return (
         <div className="App">
