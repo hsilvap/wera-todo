@@ -19,6 +19,7 @@ export const StoreActions = {
     SET_WEDNESDAY:'SET_WEDNESDAY',
     SET_THURSDAY:'SET_THURSDAY',
     SET_FRIDAY:'SET_FRIDAY',
+    SET_DAILYTASK: 'SET_DAILYTASK',
 }
 
 
