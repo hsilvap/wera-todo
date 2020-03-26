@@ -37,7 +37,7 @@ exports.scheduledEmailReminder = functions.pubsub.schedule('45 9 * * 1-5')
         var db = admin.firestore();
         var tasksRef = db.collection('tasks');
         var date = moment().add(2, 'd').startOf('day')
-        var dateLimit = moment().add(3, 'd').endOf('day')
+        var dateLimit = moment().add(2, 'd').endOf('day')
 
         return tasksRef.get()
             .then(snapshot => {
