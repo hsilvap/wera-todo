@@ -17,8 +17,8 @@ import db from '../db';
 const useStyles = makeStyles(theme => ({
     modal: {
         display: 'flex',
+        flexDirection:'column',
         alignItems: 'center',
-        justifyContent: 'center',
         overflow:'scroll',
     },
     paper: {
@@ -128,7 +128,6 @@ export default function NewTask() {
             onClose={handleClose}
             closeAfterTransition
             BackdropComponent={Backdrop}
-            disableBackdropClick
             BackdropProps={{
                 timeout: 500,
             }}

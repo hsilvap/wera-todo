@@ -20,8 +20,8 @@ const useStyles = makeStyles(theme => ({
     modal: {
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'center',
-        overflow: 'scroll',
+        flexDirection:'column',
+        overflowY: 'scroll',
     },
     paper: {
         backgroundColor: theme.palette.background.paper,
@@ -125,7 +125,6 @@ export default function EditTask() {
             onClose={handleClose}
             closeAfterTransition
             BackdropComponent={Backdrop}
-            disableBackdropClick
             BackdropProps={{
                 timeout: 500,
             }}
