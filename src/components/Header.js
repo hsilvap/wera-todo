@@ -16,7 +16,7 @@ const styles = () => ({
         display: 'flex',
         height: 62,
         flexDirection: 'row',
-        justifyContent: 'space-around',
+        justifyContent: 'space-between',
         flexShrink: '0',
         backgroundColor: '#0288d1 !important',
         alignItems: 'center',
