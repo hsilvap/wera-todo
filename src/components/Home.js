@@ -11,14 +11,15 @@ import WeeklySideBar from './WeeklyTasks/WeeklySideBar';
 
 import { StoreContext } from '../context/store';
 import { LoadMondayTasks, LoadTasks, LoadTuesdayTasks, LoadWednesdayTasks, LoadFridayTasks, LoadThursdayTasks } from '../hooks/useDb';
+import { CSSTransitionGroup } from 'react-transition-group' // ES6
 
 import './../App.css';
 
 
 const styles = () => ({
     root: {
-       display: 'flex',
-       flex: 1,
+        display: 'flex',
+        flex: 1,
     },
     wrapper: {
         /* layout */
@@ -31,7 +32,7 @@ const styles = () => ({
         backgroundRepeat: 'no-repeat',
         overflowY: 'auto',
     },
-    cardContainer:{
+    cardContainer: {
         flex: 1,
         display: 'flex',
         flexWrap: 'wrap',
@@ -42,7 +43,7 @@ const styles = () => ({
 })
 
 
-const Home =({ classes })=> {
+const Home = ({ classes }) => {
     const { state } = useContext(StoreContext)
     LoadTasks()
     LoadMondayTasks()
@@ -55,20 +56,24 @@ const Home =({ classes })=> {
         <div className="App">
             <Header />
             <div className={classes.wrapper}>
-                {state.loggedIn && 
-                <>
-                    <WeeklySideBar/>
-                    <div className={classes.cardContainer}>
-                        { state.showCompleted === false ? state.toDos.map(todo=> <Task todo={todo} userUid={state.user.uid} key={todo.uid} />)
-                        :  state.completedToDos.map(todo=> <Task todo={todo} userUid={state.user.uid} key={todo.uid}/>)
-                        }
-                    </div>
-                </>}
+                {state.loggedIn &&
+                    <>
+                        <WeeklySideBar />
+                        <CSSTransitionGroup
+                            className={classes.cardContainer}
+                            transitionName="simple"
+                            transitionEnterTimeout={500}
+                            transitionLeaveTimeout={300}>
+                            {state.showCompleted === false ? state.toDos.map(todo => <Task todo={todo} userUid={state.user.uid} key={todo.uid} />)
+                                : state.completedToDos.map(todo => <Task todo={todo} userUid={state.user.uid} key={todo.uid} />)
+                            }
+                        </CSSTransitionGroup>
+                    </>}
             </div>
-            <EditTask/>
-            <NewTask/>
-            <NewTaskFab/>
-            <NotificationSnack/>
+            <EditTask />
+            <NewTask />
+            <NewTaskFab />
+            <NotificationSnack />
         </div>
     );
 }

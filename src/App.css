@@ -59,11 +59,21 @@ img {
     background-color: rgba(0,0,0,.54);
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+
+.simple-enter {
+  opacity: 0.01;
+}
+
+.simple-enter.simple-enter-active {
+  opacity: 1;
+  transition: opacity 500ms ease-in;
+}
+
+.simple-leave {
+  opacity: 1;
+}
+
+.simple-leave.simple-leave-active {
+  opacity: 0.01;
+  transition: opacity 300ms ease-in;
 }
