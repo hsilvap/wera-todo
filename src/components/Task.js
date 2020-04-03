@@ -39,6 +39,11 @@ const useStyles = makeStyles(theme => ({
       duration: theme.transitions.duration.shortest,
     }),
   },
+  breakText:{
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+  },
   expandOpen: {
     transform: 'rotate(180deg)',
   },
@@ -94,6 +99,7 @@ const Task = ({todo, userUid}) => {
         avatar={
             <PriorityAvatar priority={todo.priority}/>
         }
+        classes={{content: classes.breakText}}
         action={
           !state.showCompleted &&  <IconButton onClick={()=> handleEditTask()} aria-label="settings">
             <EditIcon />
@@ -103,7 +109,7 @@ const Task = ({todo, userUid}) => {
         subheader={<span className={clsx(isExpired ? classes.expiredLabel : '')}> { isExpired ? moment(todo.dueDate.toDate()).format('[EXPIRED - due date] Do MMMM YYYY, h:mm:ss a') :moment(todo.dueDate.toDate()).format('[Complete me before] Do MMMM YYYY, h:mm:ss a')} </span>}
       />
       <CardContent>
-        <Typography variant="body2" color="textSecondary" component="p">
+        <Typography variant="body2" color="textSecondary" title={todo.description} component="p" className={classes.breakText}>
             {todo.description}
         </Typography>
       </CardContent>
@@ -132,7 +138,7 @@ const Task = ({todo, userUid}) => {
         <CardContent>
           <Typography paragraph>Reference links:</Typography>
           <List component="nav" aria-label="main mailbox folders">
-          {todo.links.map((link, index) => <ListItem component="a" button target="_blank" rel={"noreferrer"} href={link} key={`${link} - ${index}`}> {link} </ListItem>)} 
+          {todo.links.map((link, index) => <ListItem component="a" button target="_blank" rel={"noreferrer"} title={link} classes={{ root: classes.breakText}} href={link} key={`${link} - ${index}`}> {link} </ListItem>)} 
           </List>
           <Typography paragraph>Files:</Typography>
           {downloads.map((file, index) => <ListItem  component="a" button onClick={()=>handleDownload(file.file)} key={`${file} - ${index}`}>{file.name} </ListItem>)} 
