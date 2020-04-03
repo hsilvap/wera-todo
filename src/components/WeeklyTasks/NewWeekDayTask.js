@@ -1,20 +1,20 @@
-import React, { useState } from 'react'
+import React, { useRef } from 'react'
 
 import { TextField } from '@material-ui/core'
 import db, { getCurrentUser } from '../../db'
 
 
 const NewWeekDayTask = ({day,tasks}) => {
-    const [text, setText] = useState('')
+    const inputRef = useRef(null)
 
     const handleInput = (e) => {
-        if(e.key === 'Enter'){
-            const save = db.firestore().collection('tasks').doc(getCurrentUser().uid).collection(day).add({task: text, complete: false});
-            save.then((res)=> { setText('')}).catch(error=> console.log(error))
+        if(e.key === 'Enter' && inputRef.current.value !== ''){
+            const save = db.firestore().collection('tasks').doc(getCurrentUser().uid).collection(day).add({task: inputRef.current.value, complete: false});
+            save.then((res)=> { inputRef.current.value = ''}).catch(error=> console.log(error))
         }
     }
     return (
-            <TextField label={`New for ${day}...`} value={text} onChange={(e) => setText(e.target.value)} onKeyDown={handleInput} />
+            <TextField inputRef={inputRef} label={`New for ${day}...`}  onKeyDown={handleInput} />
     )
 }
 
