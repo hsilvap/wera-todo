@@ -14,7 +14,7 @@ const NewWeekDayTask = ({day,tasks}) => {
         }
     }
     return (
-            <TextField inputRef={inputRef} label={`New for ${day}...`}  onKeyDown={handleInput} />
+            <TextField style={{marginBottom:16}}  size="small" inputRef={inputRef} label={`New for ${day}...`}  onKeyDown={handleInput} />
     )
 }
 
