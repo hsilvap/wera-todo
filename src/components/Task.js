@@ -109,7 +109,9 @@ const Task = ({todo, userUid}) => {
         subheader={<span className={clsx(isExpired ? classes.expiredLabel : '')}> { isExpired ? moment(todo.dueDate.toDate()).format('[EXPIRED - due date] Do MMMM YYYY, h:mm:ss a') :moment(todo.dueDate.toDate()).format('[Complete me before] Do MMMM YYYY, h:mm:ss a')} </span>}
       />
       <CardContent>
-        <Typography variant="body2" color="textSecondary" title={todo.description} component="p" className={classes.breakText}>
+        <Typography variant="body2" color="textSecondary" title={todo.description} component="p" className={clsx({
+            [classes.breakText]: !expanded,
+          })}>
             {todo.description}
         </Typography>
       </CardContent>
