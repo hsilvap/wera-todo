@@ -38,7 +38,7 @@ const styles = () => ({
         flexWrap: 'wrap',
         justifyContent: 'center',
         alignItems: 'baseline',
-        height: '100%'
+        overflowY: 'auto'
     }
 })
 

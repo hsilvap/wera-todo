@@ -21,18 +21,18 @@ const styles= () =>({
         userSelect: 'none',
     },
     container:{
-        height: 'calc(100vh - 92px)',
+        height: 'calc(100vh - 90px)',
         overflowY:'auto',
     }
 })
 
 const WeeklySideBar = ({classes}) => {
     const { state } = useContext(StoreContext);
-    
+
     return(
         <div className={classes.root}>
             <div className={classes.header}>Weekly recurrent activities</div>
-            <div id='weeklytaskscontainer'className={classes.container}> {Object.entries(state.weeklyTasks).map(day => <WeekDay key={day[0]}day={day[0]}tasks={day[1]}/>)} </div>
+            <div className={classes.container}> {Object.entries(state.weeklyTasks).map(day => <WeekDay key={day[0]}day={day[0]}tasks={day[1]}/>)} </div>
         </div>
     )
 
