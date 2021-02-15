@@ -9,11 +9,11 @@ export const initialState = {
     showCompleted: false,
     user: {},
     weeklyTasks:{
-        Monday: [],
-        Tuesday: [],
-        Wednesday: [],
-        Thursday: [],
-        Friday: []
+        monday: [],
+        tuesday: [],
+        wednesday: [],
+        thursday: [],
+        friday: []
     },
     toDos: [],
     completedToDos: [],

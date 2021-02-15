@@ -5,8 +5,8 @@ import { StoreContext } from '../../context/store'
 import WeekDay from './WeekDay'
 
 
-const styles= () =>({
-    root:{
+const styles = () => ({
+    root: {
         width: '14rem',
         maxWidth: '14rem',
         direction: 'rtl',
@@ -20,19 +20,19 @@ const styles= () =>({
         height: '30px',
         userSelect: 'none',
     },
-    container:{
+    container: {
         height: 'calc(100vh - 90px)',
-        overflowY:'auto',
+        overflowY: 'auto',
     }
 })
 
-const WeeklySideBar = ({classes}) => {
+const WeeklySideBar = ({ classes }) => {
     const { state } = useContext(StoreContext);
-
-    return(
+    
+    return (
         <div className={classes.root}>
             <div className={classes.header}>Weekly recurrent activities</div>
-            <div className={classes.container}> {Object.entries(state.weeklyTasks).map(day => <WeekDay key={day[0]}day={day[0]}tasks={day[1]}/>)} </div>
+            <div className={classes.container}> {Object.entries(state.weeklyTasks).map(day => <WeekDay key={day[0]} day={day[0]} tasks={day[1]} />)} </div>
         </div>
     )
 

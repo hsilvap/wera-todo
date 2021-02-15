@@ -18,6 +18,11 @@ const styles = () =>({
     },
 })
  
+const capitalize = (s) => {
+    if (typeof s !== 'string') return ''
+    return s.charAt(0).toUpperCase() + s.slice(1)
+}
+
 const GreenCheckbox =  withStyles({
     root: {
       '&$checked': {
@@ -36,7 +41,7 @@ const WeekDay = ({day,tasks,classes}) => {
     }
     return (
         <div className={classes.taskWrapper}>
-            <ListSubheader style={{backgroundColor: 'white', fontWeight: 'bolder', marginBottom: '1em'}}>{day}</ListSubheader>
+            <ListSubheader style={{backgroundColor: 'white', fontWeight: 'bolder', marginBottom: '1em'}}>{capitalize(day)}</ListSubheader>
             <List disablePadding >
                 {tasks.map(single => {
                     const labelId = `checkbox-list-label-${single.task}`;
