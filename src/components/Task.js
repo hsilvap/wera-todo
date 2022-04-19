@@ -62,7 +62,7 @@ const Task = ({ todo, userUid }) => {
   const [downloads, setDownloads] = useState([])
   const dateType = typeof todo.dueDate
   const isExpired =
-    moment(dateType == 'string' ? todo.dueDate : todo.dueDate.toDate()) <
+    moment(dateType === 'string' ? todo.dueDate : todo.dueDate.toDate()) <
     moment(Date.now())
 
   const handleExpandClick = () => {
@@ -134,10 +134,10 @@ const Task = ({ todo, userUid }) => {
             {' '}
             {isExpired
               ? moment(
-                  dateType == 'string' ? todo.dueDate : todo.dueDate.toDate()
+                  dateType === 'string' ? todo.dueDate : todo.dueDate.toDate()
                 ).format('[EXPIRED - due date] Do MMMM YYYY, h:mm:ss a')
               : moment(
-                  dateType == 'string' ? todo.dueDate : todo.dueDate.toDate()
+                  dateType === 'string' ? todo.dueDate : todo.dueDate.toDate()
                 ).format('[Complete me before] Do MMMM YYYY, h:mm:ss a')}{' '}
           </span>
         }
