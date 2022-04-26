@@ -114,6 +114,7 @@ export default function EditTask () {
       var data = { ...task }
       var currentfiles = files.map(x => x.file)
       data.files = [...filesUrls, ...currentfiles]
+      delete data.dateObj
       await db
         .firestore()
         .collection('tasks')
