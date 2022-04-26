@@ -1,4 +1,6 @@
 import React, { useContext, useState } from 'react'
+import moment from 'moment'
+
 import { StoreContext } from '../context/store'
 import { StoreActions } from '../context/reducer'
 import { makeStyles } from '@material-ui/core/styles'
@@ -78,7 +80,9 @@ export default function NewTask () {
   const baseTask = {
     title: '',
     description: '',
-    dueDate: '',
+    dueDate: moment(new Date())
+      .set({ hour: 18 })
+      .format('YYYY-MM-DDTHH:MM'),
     priority: 1,
     links: [],
     files: [],
